@@ -1,11 +1,11 @@
-from flask import Flask, request, Request, abort, send_file, jsonify
+from flask import Flask, request, Request, abort, send_file, jsonify, render_template
 from flask_caching import Cache
 from functools import wraps
 from werkzeug.exceptions import HTTPException
 from rf2.startup import stop_server, oneclick_start_server
 from rf2.status import get_server_status
 from rf2.interaction import do_action, Action, kick_player, chat
-from rf2.deploy import deploy_server
+from rf2.deploy import deploy_server, VERSION_SUFFIX
 from rf2.results import get_results, get_replays
 from rf2.setup import install_server
 from rf2.util import create_config
@@ -232,6 +232,33 @@ def initial_setup_unlock():
         file.save(unlock_path)
         return "ok"
     return "fail"
+
+
+def get_public_mod_info():
+    got = get_server_config()
+    print(got)
+    if got is None:
+        return None
+    del got["mod"]["server"]
+    del got["mod"]["mod"]["rfm"]
+    del got["server"]
+
+    return got
+
+
+@app.route("/current", methods=["GET"])
+def current_mod_html():
+    got = get_public_mod_info()
+    if got is None:
+        abort(404)
+
+    has_updates = True
+    for source, car in got["mod"]["cars"].items():
+        if car["component"]["update"]:
+            has_updates = True
+    return render_template(
+        "current.html", data=got, suffix=VERSION_SUFFIX, has_updates=has_updates
+    )
 
 
 @app.after_request

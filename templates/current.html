@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>APX Server</title>
+</head>
+
+<body>
+  <h1 style="color: #09003d">APX</h1>
+  <p>
+    The currently deployed mod {{ data.mod.mod.name }}, version {{ data.mod.mod.version }} mentions following
+    components:
+  </p>
+  {% for mod, entries in data.mod.cars.items() %}
+  <h2>Workshop ID {{mod}}</h2>
+  {% for mod, entries in data.mod.cars.items() %}
+  Component: {{entries.component.name}}
+  <ul>
+    {% for vehicle in entries.entries %}
+    <li>{{vehicle}}</li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+  {% endfor %}
+  {% for mod, entries in data.mod.track.items() %}
+  <h2>Workshop ID {{mod}}</h2>
+  Component: {{entries.component.name}}, Layout {{entries.layout}}
+  {% endfor %}
+  <h2>Troubleshooting</h2>
+  <p>
+    The currently installed mod installs following files:
+  </p>
+  <ul>
+    <li>
+      Manifests/{{ data.mod.mod.name }}_{{ data.mod.mod.version | replace(".","")}}.mft
+    </li>
+    <li>
+      Installed/rfM/{{ data.mod.mod.name }}_{{ data.mod.mod.version | replace(".","")}}.mas
+    </li>
+    <li>
+      Packages/{{ data.mod.mod.name }}.rfmod
+    </li>
+    {% if has_updates %}
+    <li>
+      As at least one mod is an update, there will be files named "apx_" and "{{suffix}}" in the Packages/ and
+      Installed/ folder.
+    </li>
+    {% endif %}
+  </ul>
+</body>
+
+</html>

@@ -10,6 +10,8 @@ if not exist "Lib" (
   python.exe get-pip.py
   REM insta install dependencies
   python.exe -m pip install -r requirements.txt
+  
+  python.exe reciever.py
 ) else (
   python.exe reciever.py
 )
